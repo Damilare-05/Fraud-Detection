@@ -6,7 +6,7 @@ import math
 
 # Load model and scaler
 model = joblib.load('logistic_fraud_model.pkl')
-scaler = joblib.load('scaler.pkl')
+scaler = joblib.load('scaler (1).pkl')
 
 # Map types
 type_mapping = {"CASH_OUT": 0, "TRANSFER": 1}
