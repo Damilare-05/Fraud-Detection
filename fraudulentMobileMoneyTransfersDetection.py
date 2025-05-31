@@ -5,11 +5,9 @@ import joblib
 import math
 
 # Load model and scaler
-model = joblib.load('logistic_fraud_model.pkl')
-scaler = joblib.load('scaler (1).pkl')
+model = joblib.load('logistic_fraud_model1.pkl')
+scaler = joblib.load('scaler (2).pkl')
 
-# Map types
-type_mapping = {"CASH_OUT": 0, "TRANSFER": 1}
 
 st.title("💳📱💸 Mobile Money Transfer Fraud Detection")
 
@@ -19,40 +17,50 @@ image = Image.open("fraudimage.jpg")
 st.image(image, use_container_width=True)
 
 
+# Define transaction types
+transaction_types = ["TRANSFER", "PAYMENT", "CASH_OUT", "DEBIT"]
+
 st.sidebar.header("Input Transaction Details")
 
 # User Inputs
 amount = st.sidebar.number_input("💰 Transaction Amount", min_value=0.0, value=10000.0)
-txn_type = st.sidebar.selectbox("🔁 Transaction Type", options=list(type_mapping.keys()))
+txn_type = st.sidebar.selectbox("🔁 Transaction Type", options=transaction_types)
 step = st.sidebar.number_input("⏱ Time Step (hour)", min_value=0, max_value=744, value=100)
 oldbalanceOrg = st.sidebar.number_input("💼 Origin Account Balance Before", min_value=0.0, value=15000.0)
 newbalanceOrig = st.sidebar.number_input("💼 Origin Account Balance After", min_value=0.0, value=5000.0)
 oldbalanceDest = st.sidebar.number_input("🏦 Destination Balance Before", min_value=0.0, value=0.0)
 newbalanceDest = st.sidebar.number_input("🏦 Destination Balance After", min_value=0.0, value=0.0)
-flagged = st.sidebar.selectbox("🛑 Was it Flagged by Rules?", options=[0, 1])
 
 if st.button("Predict Fraud"):
+
     # Derived features
     log_amount = math.log1p(amount)
-    type_encoded = type_mapping[txn_type]
     isHighRiskType = 1 if txn_type in ["TRANSFER", "CASH_OUT"] else 0
     largeTransaction = 1 if amount > 200000 else 0
     errorBalanceOrig = oldbalanceOrg - amount - newbalanceOrig
     errorBalanceDest = oldbalanceDest + amount - newbalanceDest
 
-    # Final feature order (must match training)
-    features = np.array([[
+    # One-hot encoded transaction type
+    type_TRANSFER = 1 if txn_type == "TRANSFER" else 0
+    type_PAYMENT = 1 if txn_type == "PAYMENT" else 0
+    type_CASH_OUT = 1 if txn_type == "CASH_OUT" else 0
+    type_DEBIT = 1 if txn_type == "DEBIT" else 0
+
+    # Final feature array (must match training feature order)
+    features = np.array([[ 
         isHighRiskType,
         log_amount,
-        type_encoded,
+        type_TRANSFER,
+        type_PAYMENT,
         largeTransaction,
         step,
         errorBalanceDest,
         errorBalanceOrig,
+        type_CASH_OUT,
         newbalanceOrig,
         oldbalanceOrg,
         oldbalanceDest,
-        flagged
+        type_DEBIT
     ]])
 
     # Scale and predict
