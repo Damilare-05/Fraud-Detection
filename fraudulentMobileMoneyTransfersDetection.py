@@ -11,18 +11,25 @@ scaler = joblib.load('scaler (1).pkl')
 # Map types
 type_mapping = {"CASH_OUT": 0, "TRANSFER": 1}
 
+from PIL import Image
+
+image = Image.open("fraudimage.jpg")
+st.image(image, use_column_width=True)
+
+
 st.title("💳 Mobile Money Fraud Detection")
-st.markdown("Enter transaction details to predict if it's fraudulent.")
+
+st.sidebar.header("Input Transaction Details")
 
 # User Inputs
-amount = st.number_input("💰 Transaction Amount", min_value=0.0, value=10000.0)
-txn_type = st.selectbox("🔁 Transaction Type", options=list(type_mapping.keys()))
-step = st.number_input("⏱ Time Step (hour)", min_value=0, max_value=744, value=100)
-oldbalanceOrg = st.number_input("💼 Origin Account Balance Before", min_value=0.0, value=15000.0)
-newbalanceOrig = st.number_input("💼 Origin Account Balance After", min_value=0.0, value=5000.0)
-oldbalanceDest = st.number_input("🏦 Destination Balance Before", min_value=0.0, value=0.0)
-newbalanceDest = st.number_input("🏦 Destination Balance After", min_value=0.0, value=0.0)
-flagged = st.selectbox("🛑 Was it Flagged by Rules?", options=[0, 1])
+amount = st.sidebar.number_input("💰 Transaction Amount", min_value=0.0, value=10000.0)
+txn_type = st.sidebar.selectbox("🔁 Transaction Type", options=list(type_mapping.keys()))
+step = st.sidebar.number_input("⏱ Time Step (hour)", min_value=0, max_value=744, value=100)
+oldbalanceOrg = st.sidebar.number_input("💼 Origin Account Balance Before", min_value=0.0, value=15000.0)
+newbalanceOrig = st.sidebar.number_input("💼 Origin Account Balance After", min_value=0.0, value=5000.0)
+oldbalanceDest = st.sidebar.number_input("🏦 Destination Balance Before", min_value=0.0, value=0.0)
+newbalanceDest = st.sidebar.number_input("🏦 Destination Balance After", min_value=0.0, value=0.0)
+flagged = st.sidebar.selectbox("🛑 Was it Flagged by Rules?", options=[0, 1])
 
 if st.button("Predict Fraud"):
     # Derived features
