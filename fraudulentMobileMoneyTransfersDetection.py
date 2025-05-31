@@ -14,7 +14,7 @@ type_mapping = {"CASH_OUT": 0, "TRANSFER": 1}
 from PIL import Image
 
 image = Image.open("fraudimage.jpg")
-st.image(image, use_column_width=True)
+st.image(image, use_container_width=True)
 
 
 st.title("💳 Mobile Money Fraud Detection")
