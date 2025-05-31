@@ -11,13 +11,13 @@ scaler = joblib.load('scaler (1).pkl')
 # Map types
 type_mapping = {"CASH_OUT": 0, "TRANSFER": 1}
 
+st.title("💳📱💸 Mobile Money Transfer Fraud Detection")
+
 from PIL import Image
 
 image = Image.open("fraudimage.jpg")
 st.image(image, use_container_width=True)
 
-
-st.title("💳 Mobile Money Fraud Detection")
 
 st.sidebar.header("Input Transaction Details")
 
